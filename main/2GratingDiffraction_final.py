@@ -12,6 +12,7 @@ import sys, math, cmath, time
 import matplotlib.pyplot as plt
 import matplotlib.ticker as tkr
 from gratingLib import *
+from cudaKernels import *
 from time import gmtime, strftime
 
 
