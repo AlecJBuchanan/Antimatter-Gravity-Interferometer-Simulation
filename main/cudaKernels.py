@@ -93,12 +93,12 @@ def intensityCalculations(U_0, GratingSeparation, WaveNumber, sourcePoints, obsP
       sourcePoints (f4[:]):     Position of source points as an array of float32
       obsPoints (f4[:]):        Position of observation points as an array of float32
       sourceAmp (f4[:]):        Amplitudes from each source point as an array of float32
-      sourcePhase (c8[:]):      Phase of each source point as an array of float32
+      sourcePhase (c8[:]):      Phase of each source point as an array of complex128
 
     Returns:
       return intensities, amplituteds, phases;
-        intensities (f4[:]):	Array of intensities for each observation point as an array of complex128
-        amplitudes  (f4[:]):	Array of amplitudes  for each observation point as an array of complex128
+        intensities (f4[:]):	Array of intensities for each observation point as an array of float32
+        amplitudes  (f4[:]):	Array of amplitudes  for each observation point as an array of float32
         phases	    (c8[:]):	Array of phases      for each observation point as an array of complex128
 
     Changelog:
