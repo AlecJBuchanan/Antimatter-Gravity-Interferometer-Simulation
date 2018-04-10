@@ -27,7 +27,7 @@ def intensityKernel(U_0, GratingSeparation, WaveNumber, sourcePoints, obsPoints,
     Args:
       U_0 (float):		Constant passed in and used for calculating intensities. should be a generic python float()	
       GratingSeparation (float):Constant passed in and used as distance (on the x-plane) between source and observation points
-      WaveNumber (float):	Constant defined in global variables. I think it has to do with wave length; not sure why its named wavenumber
+      WaveNumber (float):	Constant defined in global variables. 
       sourcePoints (f4[:]):	Position of source points as an array of float32
       obsPoints (f4[:]):	Position of observation points as an array of float32
       sourceAmp (f4[:]):	Amplitudes from each source point as an array of float32
@@ -68,12 +68,12 @@ def intensityKernel(U_0, GratingSeparation, WaveNumber, sourcePoints, obsPoints,
         # Determine the phase between points
         phase = cmath.exp(1j * WaveNumber * dist)
         # find Amplitudes
-        U = U_0 * (phase.real + 1j*phase.imag)*(sourcePhase[point].real + 1j*sourcePhase[point].imag) / dist
+        U = sourceAmp[point] * (phase.real + 1j*phase.imag)*(sourcePhase[point].real + 1j*sourcePhase[point].imag) / dist
         # sum the totals
         phaseSum = phaseSum + phase
         ampSum   = ampSum + U
     # Find Intensity
-    intensitySum  =( ampSum.real**2 + ampSum.imag**2) #(ampSum * conjugate(ampSum)).real
+    intensitySum  =( ampSum.real**2 + ampSum.imag**2) 
     # take the square root of intensity
     preservedAmp  = math.sqrt(intensitySum)
 
@@ -93,12 +93,12 @@ def intensityCalculations(U_0, GratingSeparation, WaveNumber, sourcePoints, obsP
       sourcePoints (f4[:]):     Position of source points as an array of float32
       obsPoints (f4[:]):        Position of observation points as an array of float32
       sourceAmp (f4[:]):        Amplitudes from each source point as an array of float32
-      sourcePhase (c8[:]):      Phase of each source point as an array of complex128
+      sourcePhase (c8[:]):      Phase of each source point as an array of float32
 
     Returns:
       return intensities, amplituteds, phases;
-        intensities (f4[:]):	Array of intensities for each observation point as an array of float32
-        amplitudes  (f4[:]):	Array of amplitudes  for each observation point as an array of float32
+        intensities (f4[:]):	Array of intensities for each observation point as an array of complex128
+        amplitudes  (f4[:]):	Array of amplitudes  for each observation point as an array of complex128
         phases	    (c8[:]):	Array of phases      for each observation point as an array of complex128
 
     Changelog:
@@ -137,7 +137,6 @@ def intensityCalculations(U_0, GratingSeparation, WaveNumber, sourcePoints, obsP
     out_a = np.array(out_a, dtype='f4')
 
     return out_i, out_a, out_p
-
 
 
 
