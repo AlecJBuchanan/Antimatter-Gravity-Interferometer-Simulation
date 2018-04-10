@@ -28,8 +28,8 @@ def intensityKernel(GratingSeparation, WaveNumber, sourcePoints, obsPoints, sour
       sourceAmp (f4[:]):	Amplitudes from each source point as an array of float32
       sourcePhase (c8[:]):	Phase of each source point as an array of float32
       out_phase (c8[:]):	Reference to observation point phase array used for output as an array of complex128
-      out_amp (c8[:]):		Reference to observation point amplitude array used for output as an array of complex128
-      out_intense (c8[:]):	Reference to observation point intensity array used for output as an array of complex128
+      out_amp (f4[:]):		Reference to observation point amplitude array used for output as an array of float32
+      out_intense (f4[:]):	Reference to observation point intensity array used for output as an array of float32
     Returns:
       Nothing, CUDA kernels can not return anything
     ChangeLog:
