@@ -20,12 +20,11 @@ import sys, math, cmath
 
 # This function gets called for every observation point
 @cuda.jit
-def intensityKernel(U_0, GratingSeparation, WaveNumber, sourcePoints, obsPoints, sourceAmp, sourcePhase, out_phase, out_amp, out_intense):
+def intensityKernel(GratingSeparation, WaveNumber, sourcePoints, obsPoints, sourceAmp, sourcePhase, out_phase, out_amp, out_intense):
     """calculates intensity, amplitude and phases between sources points and observation points
        Since this a CUDA kernel. This function gets called for each observation point. It should be changed to be called for each calculation
 
     Args:
-      U_0 (float):		Constant passed in and used for calculating intensities. should be a generic python float()	
       GratingSeparation (float):Constant passed in and used as distance (on the x-plane) between source and observation points
       WaveNumber (float):	Constant defined in global variables. 
       sourcePoints (f4[:]):	Position of source points as an array of float32
@@ -83,22 +82,21 @@ def intensityKernel(U_0, GratingSeparation, WaveNumber, sourcePoints, obsPoints,
     out_intense[pos] = intensitySum
 
 
-def intensityCalculations(U_0, GratingSeparation, WaveNumber, sourcePoints, obsPoints, sourceAmp, sourcePhase):
+def intensityCalculations(GratingSeparation, WaveNumber, sourcePoints, obsPoints, sourceAmp, sourcePhase):
     """This function is used as an abstraction layer for the CUDA kernel. This function does the type casting and is able to return values.
       
     Args:
-      U_0 (float):              Constant passed in and used for calculating intensities. should be a generic python float()
       GratingSeparation (float):Constant passed in and used as distance (on the x-plane) between source and observation points
       WaveNumber (float):       Constant defined in global variables. I think it has to do with wave length; not sure why its named wavenumber
       sourcePoints (f4[:]):     Position of source points as an array of float32
       obsPoints (f4[:]):        Position of observation points as an array of float32
       sourceAmp (f4[:]):        Amplitudes from each source point as an array of float32
-      sourcePhase (c8[:]):      Phase of each source point as an array of float32
+      sourcePhase (c8[:]):      Phase of each source point as an array of complex128
 
     Returns:
       return intensities, amplituteds, phases;
-        intensities (f4[:]):	Array of intensities for each observation point as an array of complex128
-        amplitudes  (f4[:]):	Array of amplitudes  for each observation point as an array of complex128
+        intensities (c8[:]):	Array of intensities for each observation point as an array of complex128
+        amplitudes  (c8[:]):	Array of amplitudes  for each observation point as an array of complex128
         phases	    (c8[:]):	Array of phases      for each observation point as an array of complex128
 
     Changelog:
@@ -119,7 +117,6 @@ def intensityCalculations(U_0, GratingSeparation, WaveNumber, sourcePoints, obsP
     out_p = [0.0]*arraySize #phase
 
     #Cast datatypes so the kernel does not complain
-    U_0 		= float(U_0)
     GratingSeparation 	= float(GratingSeparation)
     WaveNumber		= float(WaveNumber)
     sourcePoints   	= np.array(sourcePoints, dtype='f4')
@@ -130,7 +127,7 @@ def intensityCalculations(U_0, GratingSeparation, WaveNumber, sourcePoints, obsP
     out_i 		= np.array(out_i, dtype='c8')
 
     #call CUDA kernel
-    intensityKernel[blockspergrid, threadsperblock](U_0, GratingSeparation, WaveNumber, sourcePoints, obsPoints, sourceAmp, sourcePhase, out_p, out_a, out_i)
+    intensityKernel[blockspergrid, threadsperblock](GratingSeparation, WaveNumber, sourcePoints, obsPoints, sourceAmp, sourcePhase, out_p, out_a, out_i)
 
     #Remove Imaginary parts
     out_i = np.array(out_i, dtype='f4')
