@@ -2,14 +2,11 @@
 # -*- coding: utf-8 -*-
 """ cudaKernels.py
   This module is used to house all of the CUDA Kernels for the antimatter gravity interferometer simulation code. 
-
   Attributes:
     <currently no module level variables>
-
   TODO:
     * rename calcIntensitiesCUDA_new
     * make new function to add some abstraction
-
   Author:
     Alec Buchanan - 03/2018
 """
@@ -23,7 +20,6 @@ import sys, math, cmath
 def intensityKernel(GratingSeparation, WaveNumber, sourcePoints, obsPoints, sourceAmp, sourcePhase, out_phase, out_amp, out_intense):
     """calculates intensity, amplitude and phases between sources points and observation points
        Since this a CUDA kernel. This function gets called for each observation point. It should be changed to be called for each calculation
-
     Args:
       GratingSeparation (float):Constant passed in and used as distance (on the x-plane) between source and observation points
       WaveNumber (float):	Constant defined in global variables. 
@@ -34,19 +30,15 @@ def intensityKernel(GratingSeparation, WaveNumber, sourcePoints, obsPoints, sour
       out_phase (c8[:]):	Reference to observation point phase array used for output as an array of complex128
       out_amp (c8[:]):		Reference to observation point amplitude array used for output as an array of complex128
       out_intense (c8[:]):	Reference to observation point intensity array used for output as an array of complex128
-
     Returns:
       Nothing, CUDA kernels can not return anything
-
     ChangeLog:
       
  
     TODO:
       * change function to be called for each calculation instead of each observation point.  
-
     Author:
       Alec Buchanan - 3/2018
-
     """
     # Basic CUDA code to determine which thread we are in
     tx  = cuda.threadIdx.x # Thread id in a 1D block = particle index
@@ -92,17 +84,13 @@ def intensityCalculations(GratingSeparation, WaveNumber, sourcePoints, obsPoints
       obsPoints (f4[:]):        Position of observation points as an array of float32
       sourceAmp (f4[:]):        Amplitudes from each source point as an array of float32
       sourcePhase (c8[:]):      Phase of each source point as an array of complex128
-
     Returns:
       return intensities, amplituteds, phases;
-        intensities (c8[:]):	Array of intensities for each observation point as an array of complex128
-        amplitudes  (c8[:]):	Array of amplitudes  for each observation point as an array of complex128
+        intensities (f4[:]):	Array of intensities for each observation point as an array of float32
+        amplitudes  (f4[:]):	Array of amplitudes  for each observation point as an array of float32
         phases	    (c8[:]):	Array of phases      for each observation point as an array of complex128
-
     Changelog:
-
     TODO:
-
     Author:
       Alec Buchanan - 3/2018
     """
@@ -123,8 +111,8 @@ def intensityCalculations(GratingSeparation, WaveNumber, sourcePoints, obsPoints
     obsPoints  		= np.array(obsPoints, dtype='f4')
     sourcePhase		= np.array(sourcePhase, dtype='c8')
     out_p 		= np.array(out_p, dtype='c8')
-    out_a 		= np.array(out_a, dtype='c8')
-    out_i 		= np.array(out_i, dtype='c8')
+    out_a 		= np.array(out_a, dtype='f4')
+    out_i 		= np.array(out_i, dtype='f4')
 
     #call CUDA kernel
     intensityKernel[blockspergrid, threadsperblock](GratingSeparation, WaveNumber, sourcePoints, obsPoints, sourceAmp, sourcePhase, out_p, out_a, out_i)
@@ -134,20 +122,3 @@ def intensityCalculations(GratingSeparation, WaveNumber, sourcePoints, obsPoints
     out_a = np.array(out_a, dtype='f4')
 
     return out_i, out_a, out_p
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
